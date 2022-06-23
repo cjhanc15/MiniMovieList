@@ -1,0 +1,25 @@
+{
+  "name": "minimovielist",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cjhanc15/MiniMovieList.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cjhanc15/MiniMovieList/issues"
+  },
+  "homepage": "https://github.com/cjhanc15/MiniMovieList#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "knex": "^2.1.0",
+    "pg": "^8.7.3"
+  }
+}
