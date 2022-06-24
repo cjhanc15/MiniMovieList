@@ -38,13 +38,11 @@ app.get('/movies', (req, res) => {
 
 // DELETE ------------------------------------------------------//
 app.delete('/movies', async (req, res) => {
-let result = await knex('movielist')
-  .del()
-  .where(req.body.id)
 await knex('movielist')
-  .select('*')
-  res.status(200)
-  res.send(result);
+  .delete()
+  .from('movielist')
+  .where({title: req.body.title})
+  .then(data => res.status(200))
 })
 
 module.exports = app;

@@ -38,21 +38,13 @@ const MovieList = () => {
     })
   }
 
-  const deleteMovie = (id) => {
-    const deletedMovie = {
+  const deleteMovie = (title1) => {
+    fetch('http://localhost:8080/movies', {
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-    }
-    fetch('http://localhost:8080/movies', deletedMovie)
-    .then(res => res.json())
-    .then(data => {
-      console.log(data);
-      let newList = {...movies};
-
-      setMovies(newList);
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({title: title1})
     })
+    setMovies((data) => data.filter(info => info.title !== title1))
   }
 
   return (
@@ -64,7 +56,9 @@ const MovieList = () => {
           <div>
             <p>{movie.title}, {movie.release_year}</p>
             <img src={movie.cover} alt={movie.title} height='500px'/>
-            <button onClick={deleteMovie(movie.id)}>Delete</button>
+            <button onClick={() => {
+              deleteMovie(movie.title)
+              }}>Delete</button>
           </div>
         ))}
       </div>
