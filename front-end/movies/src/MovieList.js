@@ -1,8 +1,7 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormDialog from "./FormDialog";
 import {Button} from '@mui/material'
 import './MovieList.css'
-import { AppContext, AppProvider } from "./AppContext";
 
 const MovieList = () => {
   //Hooks
@@ -56,7 +55,7 @@ const MovieList = () => {
     <div className="page">
       <div className="header-container">
         <div className="signature-container">
-          <img className="signature" src="https://acimg.auctivacommerce.com/imgdata/0/2/0/4/2/7/webimg/3740000.jpg"/>
+          <img className="signature" src="https://acimg.auctivacommerce.com/imgdata/0/2/0/4/2/7/webimg/3740000.jpg" alt="movie cover"/>
         </div>
         <div className="search">        
           <input className="search-input" type="text" placeholder="Search" onKeyUp={(e) => searchHandler(e)} />
@@ -66,7 +65,7 @@ const MovieList = () => {
         <div className="results">
         {filteredResults.map(movie => (
           <div>
-            <FormDialog movie={movie.title} id={movie.id}/>
+            <FormDialog movie={movie.title} id={movie.id} list={{movies, setMovies}}/>
             <img className='cover' src={movie.cover} alt={movie.title}/>
             <div className="buttons">            
               <Button variant="outlined"className="delete" onClick={() => {

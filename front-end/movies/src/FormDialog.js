@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function FormDialog({movie, id}) {
+export default function FormDialog({movie, id, list}) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -30,7 +30,12 @@ export default function FormDialog({movie, id}) {
       body: JSON.stringify(data)
     }
     fetch(`http://localhost:8080/movies/${id}`, update)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error(`Error: ${res.status}`)
+      return res.json()
+    })
+    .then(data => list.setMovies(data)) // add this line of code here to your fetch
+    .then(()=> setOpen(false));
   }
 
   return (
