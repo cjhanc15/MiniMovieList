@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import FormDialog from "./FormDialog";
+import {Button} from '@mui/material'
+import './MovieList.css'
+import { AppContext, AppProvider } from "./AppContext";
 
 const MovieList = () => {
   //Hooks
-  const [movies, setMovies] = useState([]);
+  const [movies, setMovies] = useState([])
   const [searchInput, setSearchInput] = useState('')
   //Fetch
   useEffect(() => {
@@ -14,6 +18,7 @@ const MovieList = () => {
   const searchHandler = (e) => {
     setSearchInput(e.target.value)
   };
+
   let filteredResults = movies.filter(movie => {
     return movie.title.toUpperCase().includes(searchInput.toUpperCase())
   })
@@ -34,36 +39,45 @@ const MovieList = () => {
     fetch('http://localhost:8080/movies', newMovie)
     .then(res => res.json())
     .then(data => {
-      setMovies(data);
+    setMovies(data);
     })
   }
 
-  const deleteMovie = (title1) => {
-    fetch('http://localhost:8080/movies', {
+  const deleteMovie = (id) => {
+    fetch(`http://localhost:8080/movies/${id}`, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({title: title1})
     })
-    setMovies((data) => data.filter(info => info.title !== title1))
+    setMovies((data) => data.filter(info => info.id !== id))
   }
 
   return (
-    <div>
-      <h1>Elvis Presley's Movies</h1>
-      <div>
-        <input type="text" placeholder="Search" onKeyUp={(e) => searchHandler(e)} />
+    <>
+    <div className="page">
+      <div className="header-container">
+        <div className="signature-container">
+          <img className="signature" src="https://acimg.auctivacommerce.com/imgdata/0/2/0/4/2/7/webimg/3740000.jpg"/>
+        </div>
+        <div className="search">        
+          <input className="search-input" type="text" placeholder="Search" onKeyUp={(e) => searchHandler(e)} />
+
+        </div>
+      </div>
+        <div className="results">
         {filteredResults.map(movie => (
           <div>
-            <p>{movie.title}, {movie.release_year}</p>
-            <img src={movie.cover} alt={movie.title} height='500px'/>
-            <button onClick={() => {
-              deleteMovie(movie.title)
-              }}>Delete</button>
+            <FormDialog movie={movie.title} id={movie.id}/>
+            <img className='cover' src={movie.cover} alt={movie.title}/>
+            <div className="buttons">            
+              <Button variant="outlined"className="delete" onClick={() => {
+              deleteMovie(movie.id)
+              }}>Delete</Button>
+            </div>
           </div>
         ))}
-      </div>
-      <h3>Not finding a movie? Add it here!</h3>
-      <div>
+        </div>
+      <h3 className="header-3">Not finding a movie? Add it here!</h3>
+      <div className="inputs">
         <input id='title' placeholder='Title'/>
         <input id='genre' placeholder='Genre'/>
         <input id='release_year' placeholder='Year Released'/>
@@ -78,6 +92,7 @@ const MovieList = () => {
         }}>Add Movie</button>
       </div>          
     </div>
+    </>
   )
 }
 

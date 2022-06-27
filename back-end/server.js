@@ -1,19 +1,18 @@
 const express = require('express');
 const knex = require('knex')(require('./knexfile.js')[process.env.NODE_ENV||'development']);
 const app = express();
-const cors = require('cors')
+const cors = require('cors');
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 
 //CREATE ------------------------------------------------------//
-app.post('/movies', async (req, res) => {
-  await knex('movielist')
+app.post('/movies', (req, res) => {
+  knex('movielist')
   .insert(req.body)
-  let result = await knex('movielist')
-  .select('*')
-  res.send(result);
-})
+  .then(()=> knex('movielist'))
+  .then(data => res.status(200).json(data))
+});
 
 // READ -------------------------------------------------------//
 app.get('/', (req, res) => {
@@ -21,27 +20,33 @@ app.get('/', (req, res) => {
 });
 
 app.get('/movies', (req, res) => {
-  knex
+  knex('movielist')
   .select('*')
-  .from('movielist')
   .then(data => res.status(200).json(data))
-  .catch(err =>
-    res.status(400).json({
-      message: 'Cannot get movies'
-    })
-  );
+  .catch(() => res.status(404).send(`Could not retrieve movies`))
+})
+
+app.get('/movies/:id', (req, res) => {
+  knex('movielist')
+      .where('id', req.params.id)
+      .then(data => res.status(200).json(data))
+      .catch(() => res.status(404).send(`Could not retrieve movie at movie id ${req.params.id}`))
 });
 
-// //UPDATE ------------------------------------------------------//
-// app.patch('/movies', (req, res) => {
-// })
+// UPDATE ------------------------------------------------------//
+app.patch('/movies/:id', (req, res) => {
+  knex('movielist')
+  .where({id: req.params.id})
+  .update(req.body)  
+  .then(()=> knex('movielist'))
+  .then(data => res.status(200).json(data))
+})
 
 // DELETE ------------------------------------------------------//
-app.delete('/movies', async (req, res) => {
-await knex('movielist')
+app.delete('/movies/:id', (req, res) => {
+  knex('movielist')
   .delete()
-  .from('movielist')
-  .where({title: req.body.title})
+  .where({id: req.params.id})
   .then(data => res.status(200))
 })
 
